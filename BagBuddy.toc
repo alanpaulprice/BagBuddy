@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: BagBuddy
+## Notes: A handy helper that allows you to filter your inventory
+
+BagBuddy.lua
+BagBuddy.xml
