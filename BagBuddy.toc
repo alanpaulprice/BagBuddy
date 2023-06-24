@@ -1,6 +1,7 @@
 ## Interface: 30200
 ## Title: BagBuddy
 ## Notes: A handy helper that allows you to filter your inventory
+## SavedVariablesPerCharacter: BagBuddy_ItemTimes
 
 BagBuddy.lua
 BagBuddy.xml

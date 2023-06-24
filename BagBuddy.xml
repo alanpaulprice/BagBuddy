@@ -3,7 +3,7 @@
   xsi:schemaLocation="http://www.blizzard.com/wow/ui/
   http://wowprogramming.com/FrameXML/UI.xsd">
 
-  <Button name="BagBuddyItemTemplate" virtual="true">
+  <Button name="BagBuddyItemTemplate" inherits="SecureActionButtonTemplate" virtual="true">
     <Size>
       <AbsDimension x="37" y="37"/>
     </Size>
@@ -30,6 +30,13 @@
         </Texture>
       </Layer>
     </Layers>
+    <Attributes>
+      <Attribute name="type2" type="string" value="item"/>
+    </Attributes>
+    <Scripts>
+      <OnEnter function="BagBuddy_Button_OnEnter"/>
+      <OnLeave function="BagBuddy_Button_OnLeave"/>
+    </Scripts>
     <NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-Quickslot2">
       <Size>
         <AbsDimension x="64" y="64"/>
@@ -46,7 +53,16 @@
     <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
   </Button>
 
-  <Frame name="BagBuddy" parent="UIParent">
+  <CheckButton name="BagBuddyFilterTemplate" inherits="BagBuddyItemTemplate" virtual="true">
+    <Scripts>
+      <OnEnter function="BagBuddy_Filter_OnEnter"/>
+      <OnLeave function="BagBuddy_Filter_OnLeave"/>
+      <OnClick function="BagBuddy_Filter_OnClick"/>
+    </Scripts>
+    <CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+  </CheckButton>
+
+  <Frame name="BagBuddy" parent="UIParent" hidden="true">
     <Size x="384" y="512"/>
     <Anchors>
       <Anchor point="CENTER" relativePoint="CENTER" relativeTo="UIParent"/>
@@ -70,6 +86,14 @@
             </Anchor>
           </Anchors>
         </FontString>
+        <FontString name="$parent_Status" parentKey="status" inherits="GameFontHighlight"> 
+          <Anchors>
+            <Anchor point="CENTER" relativePoint="BOTTOM">
+              <Offset x="-10" y="150"/>
+            </Anchor>
+          </Anchors>
+        </FontString>
+
       </Layer>
       <Layer level="BORDER">
         <Texture file="Interface\BankFrame\UI-BankFrame-TopLeft">
@@ -94,8 +118,73 @@
         </Texture>
       </Layer>
     </Layers>
+    <Frames>
+      <Button name="$parent_Close" parentKey="close" inherits="UIPanelCloseButton">
+        <Anchors>
+          <Anchor point="TOPRIGHT">
+            <Offset x="-30" y="-8"/>
+          </Anchor>
+        </Anchors>
+      </Button>
+      <Button name="BagBuddy_PrevButton" parentKey="prev">
+        <Size x="32" y="32"/>
+        <Anchors>
+          <Anchor point="CENTER" relativeTo="BagBuddy" relativePoint="BOTTOMLEFT">
+            <Offset>
+              <AbsDimension x="50" y="150"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick function="BagBuddy_PrevPage"/>
+        </Scripts>
+        <NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
+        <PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
+        <DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
+        <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+      </Button>
+
+      <Button name="BagBuddy_NextButton" parentKey="next">
+        <Size x="32" y="32"/>
+        <Anchors>
+          <Anchor point="CENTER" relativeTo="BagBuddy" relativePoint="BOTTOMRIGHT">
+            <Offset>
+              <AbsDimension x="-70" y="150"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick function="BagBuddy_NextPage"/>
+        </Scripts>
+        <NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
+        <PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down"/>
+        <DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
+        <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+      </Button>
+      <EditBox name="$parent_Input" parentKey="input" autoFocus="false">
+        <Size x="400" y="20"/>
+        <Anchors>
+          <Anchor point="BOTTOMLEFT">
+            <Offset x="32" y="100"/>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnEscapePressed>
+            self:ClearFocus()
+          </OnEscapePressed>
+          <OnTextChanged>
+            BagBuddy_Update()
+          </OnTextChanged>
+        </Scripts>
+        <FontString inherits="GameFontHighlight"/>
+      </EditBox>
+
+    </Frames>
+
     <Scripts>
       <OnLoad function="BagBuddy_OnLoad"/>
+      <OnEvent function="BagBuddy_OnEvent"/>
     </Scripts>
   </Frame>
 </Ui>
+
